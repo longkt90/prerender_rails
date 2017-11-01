@@ -4,13 +4,10 @@ module Rack
     require 'active_support'
 
     def initialize(app, options={})
-      # googlebot, yahoo, and bingbot are not in this list because
-      # we support _escaped_fragment_ and want to ensure people aren't
-      # penalized for cloaking.
       @crawler_user_agents = [
-        # 'googlebot',
-        # 'yahoo',
-        # 'bingbot',
+        'googlebot',
+        'yahoo',
+        'bingbot',
         'baiduspider',
         'facebookexternalhit',
         'twitterbot',
@@ -122,8 +119,6 @@ module Rack
       return false if env['REQUEST_METHOD'] != 'GET'
 
       request = Rack::Request.new(env)
-
-      is_requesting_prerendered_page = true if Rack::Utils.parse_query(request.query_string).has_key?('_escaped_fragment_')
 
       #if it is a bot...show prerendered page
       is_requesting_prerendered_page = true if @crawler_user_agents.any? { |crawler_user_agent| user_agent.downcase.include?(crawler_user_agent.downcase) }
